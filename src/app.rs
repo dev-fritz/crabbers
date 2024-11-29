@@ -154,7 +154,7 @@ impl App {
 }
 
 fn render_title(area: Rect, buf: &mut Buffer) {
-    "Created by DevFritz".bold().render(area, buf);
+    "DevFritz".bold().render(area, buf);
 }
 
 fn render_footer(area: Rect, buf: &mut Buffer) {
