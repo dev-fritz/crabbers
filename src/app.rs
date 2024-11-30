@@ -1,3 +1,4 @@
+use std::cmp::PartialEq;
 use color_eyre::Result;
 use ratatui::{
     buffer::Buffer,
@@ -9,8 +10,8 @@ use ratatui::{
     widgets::{Block, Padding, Tabs, Widget},
     DefaultTerminal,
 };
-use ratatui::widgets::Table;
 use strum::{Display, EnumIter, FromRepr, IntoEnumIterator};
+use crate::service::screen::TableState;
 
 pub fn run() -> Result<()> {
     color_eyre::install()?;
@@ -24,6 +25,7 @@ pub fn run() -> Result<()> {
 struct App {
     state: AppState,
     selected_tab: SelectedTab,
+    table_state: TableState,
 }
 
 #[derive(Default, Clone, Copy, PartialEq, Eq)]
@@ -184,33 +186,23 @@ impl SelectedTab {
     }
 
     fn draw_start(self, area: Rect, buf: &mut Buffer) {
-        Table::default()
-            .block(self.block())
-            .render(area, buf);
+        crate::start::screen::run(area, buf, self.block())
     }
 
     fn draw_service(self, area: Rect, buf: &mut Buffer) {
-        Table::default()
-            .block(self.block())
-            .render(area, buf);
+        crate::service::screen::run(area, buf, self.block())
     }
 
     fn draw_network(self, area: Rect, buf: &mut Buffer) {
-        Table::default()
-            .block(self.block())
-            .render(area, buf);
+        crate::network::screen::run(area, buf, self.block())
     }
 
     fn draw_pdf(self, area: Rect, buf: &mut Buffer) {
-        Table::default()
-            .block(self.block())
-            .render(area, buf);
+        crate::pdf::screen::run(area, buf, self.block())
     }
 
     fn draw_crypt(self, area: Rect, buf: &mut Buffer) {
-        Table::default()
-            .block(self.block())
-            .render(area, buf);
+        crate::crypt::screen::run(area, buf, self.block())
     }
 
     fn block(self) -> Block<'static> {
@@ -222,7 +214,7 @@ impl SelectedTab {
 
     const fn palette(self) -> tailwind::Palette {
         match self {
-            Self::Start => tailwind::FUCHSIA,
+            Self::Start => tailwind::NEUTRAL,
             Self::Services => tailwind::BLUE,
             Self::Network => tailwind::EMERALD,
             Self::PDF => tailwind::INDIGO,
